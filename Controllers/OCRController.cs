@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Drawing;
+using SixLabors.ImageSharp;
 using TesseractOCRPlugin;
 
 namespace TesseractOCRAPI.Controllers
@@ -30,13 +30,11 @@ namespace TesseractOCRAPI.Controllers
             string text = "";
             TesseractOCR TessOCR = new TesseractOCR("eng", TesseractOCR.Quality.High);
 
-            //string text = TessOCR.OCRimage(file);
-
             using (var memoryStream = new MemoryStream())
             {
                 await file.CopyToAsync(memoryStream);
                 //https://stackoverflow.com/questions/70272542/nuget-system-drawing-common-net-6-ca1416-this-call-site-is-reachable-on-all-pla
-                using (Image img = Image.FromStream(memoryStream))
+                using (Image img = Image.Load(memoryStream))
                 {
                     // TODO: ResizeImage(img, 100, 100);
                     text = TessOCR.OCRimage(img);
