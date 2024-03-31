@@ -1,5 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
+using SixLabors.ImageSharp.Formats;
+using System.Runtime.Intrinsics.X86;
+using System.Text;
 using TesseractOCRPlugin;
 
 namespace TesseractOCRAPI.Controllers
@@ -33,7 +37,8 @@ namespace TesseractOCRAPI.Controllers
             using (var memoryStream = new MemoryStream())
             {
                 await file.CopyToAsync(memoryStream);
-                //https://stackoverflow.com/questions/70272542/nuget-system-drawing-common-net-6-ca1416-this-call-site-is-reachable-on-all-pla
+                //Reset Stream
+                memoryStream.Seek(0, SeekOrigin.Begin);
                 using (Image img = Image.Load(memoryStream))
                 {
                     // TODO: ResizeImage(img, 100, 100);
