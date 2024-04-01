@@ -1,42 +1,57 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Drawing;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
+using SixLabors.ImageSharp.Formats;
+using System.Runtime.Intrinsics.X86;
+using System.Text;
 using TesseractOCRPlugin;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using System.Net;
+using System.Web.Http;
 
 namespace TesseractOCRAPI.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Microsoft.AspNetCore.Mvc.Route("[controller]")]
     public class OCRController : ControllerBase
     {
         private readonly ILogger<OCRController> _logger;
 
-        public OCRController(ILogger<OCRController> logger)
+        private readonly IApiKeyValidation _apiKeyValidation;
+
+        public OCRController(ILogger<OCRController> logger, IApiKeyValidation apiKeyValidation)
         {
             _logger = logger;
+            _apiKeyValidation = apiKeyValidation;
         }
 
-        [HttpGet(Name = "GetOCRResults")]
-        public IEnumerable<OCResults> Get(string text)
+        [Microsoft.AspNetCore.Mvc.HttpGet(Name = "GetOCRResultsKey")]
+        public IEnumerable<OCResults> Get(string text, string apiKey)
         {
+            bool isValid = _apiKeyValidation.IsValidApiKey(apiKey);
+            if (!isValid)
+            {
+                throw new HttpResponseException(HttpStatusCode.Unauthorized);
+            }
+
             return Enumerable.Range(1, 1).Select(index => new OCResults
             {
                 Text = text
             }).ToArray();
         }
 
-        [HttpPost]
+        [Microsoft.AspNetCore.Mvc.HttpPost]
         public async Task<IActionResult> UploadImage(IFormFile file)
         {
             string text = "";
             TesseractOCR TessOCR = new TesseractOCR("eng", TesseractOCR.Quality.High);
 
-            //string text = TessOCR.OCRimage(file);
-
             using (var memoryStream = new MemoryStream())
             {
                 await file.CopyToAsync(memoryStream);
-                //https://stackoverflow.com/questions/70272542/nuget-system-drawing-common-net-6-ca1416-this-call-site-is-reachable-on-all-pla
-                using (Image img = Image.FromStream(memoryStream))
+                //Reset Stream
+                memoryStream.Seek(0, SeekOrigin.Begin);
+                using (Image img = Image.Load(memoryStream))
                 {
                     // TODO: ResizeImage(img, 100, 100);
                     text = TessOCR.OCRimage(img);
