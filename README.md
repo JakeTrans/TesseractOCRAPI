@@ -6,4 +6,4 @@ Please note this will currently only work on Windows nodes and Azure App service
 
 includes Swagger Documentation as part of the deployment for testing as only one function.
 
-Currently this requires no authorisation process as such please be aware if hosting on azure etc, as anyone with the URL can use it.
+Currently this requires a API set in appsettings.json for authorisation as such please be aware if hosting on azure etc, and change it to your perfer key setup as anyone with this repo can use it with the default key.
