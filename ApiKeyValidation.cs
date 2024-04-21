@@ -14,7 +14,7 @@
             if (string.IsNullOrWhiteSpace(userApiKey))
                 return false;
 
-            string? apiKey = _configuration.GetValue<string>(GetAPIKey.Getkey());
+            string? apiKey = GetAPIKey.Getkey();
 
             if (apiKey == null || apiKey != userApiKey)
                 return false;

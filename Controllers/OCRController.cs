@@ -25,8 +25,8 @@ namespace TesseractOCRAPI.Controllers
             _apiKeyValidation = apiKeyValidation;
         }
 
-        [Microsoft.AspNetCore.Mvc.HttpGet(Name = "GetOCRResultsKey")]
-        public IEnumerable<OCResults> Get(string text, string apiKey)
+        [Microsoft.AspNetCore.Mvc.HttpPost]
+        public async Task<IActionResult> UploadImage(IFormFile file, string apiKey)
         {
             bool isValid = _apiKeyValidation.IsValidApiKey(apiKey);
             if (!isValid)
@@ -34,15 +34,6 @@ namespace TesseractOCRAPI.Controllers
                 throw new HttpResponseException(HttpStatusCode.Unauthorized);
             }
 
-            return Enumerable.Range(1, 1).Select(index => new OCResults
-            {
-                Text = text
-            }).ToArray();
-        }
-
-        [Microsoft.AspNetCore.Mvc.HttpPost]
-        public async Task<IActionResult> UploadImage(IFormFile file)
-        {
             string text = "";
             TesseractOCR TessOCR = new TesseractOCR("eng", TesseractOCR.Quality.High);
 
