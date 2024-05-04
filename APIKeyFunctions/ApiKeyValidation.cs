@@ -1,4 +1,4 @@
-﻿namespace TesseractOCRAPI
+﻿namespace TesseractOCRAPI.APIKeyFunctions
 {
     public class ApiKeyValidation : IApiKeyValidation
     {

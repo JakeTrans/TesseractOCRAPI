@@ -8,6 +8,7 @@ using TesseractOCRPlugin;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using System.Net;
 using System.Web.Http;
+using TesseractOCRAPI.APIKeyFunctions;
 
 namespace TesseractOCRAPI.Controllers
 {
