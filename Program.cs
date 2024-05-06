@@ -1,4 +1,4 @@
-using TesseractOCRAPI;
+using TesseractOCRAPI.APIKeyFunctions;
 
 var builder = WebApplication.CreateBuilder(args);
 
